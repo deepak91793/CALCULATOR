@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #f1f1f1;
+            --font-size: 18px;
+        }
+       
+        .calculator {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            max-width: 300px;
+            margin: 0 auto;
+            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        .calculator input {
+            grid-column: span 4;
+            font-size: 18px;
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: var(--secondary-color);
+        }
+        .calculator button {
+            font-size: 16px;
+            padding: 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .calculator button:hover {
+            background-color: #2980b9;
+        }
+
+        .calculator button:active {
+            background-color: #1a73e8;
+        }
+
+        .header {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .row1 {
+            grid-row: 1;
+        }
+        .row2 {
+            grid-row: 2;
+        }
+        .row3 {
+            grid-row: 3;
+        }
+        .row4 {
+            grid-row: 4;
+        }
+        .row5 {
+            grid-row: 5;
+        }
+        .row6 {
+            grid-row: 6;
+        }
+        .row7 {
+            grid-row: 7;
+        }
+        .row8 {
+            grid-row: 8;
+        }
+        .row9 {
+            grid-row: 9;
+        }
+        .col1 {
+            grid-column: 1;
+        }
+        .col2 {
+            grid-column: 2;
+        }
+        .col3 {
+            grid-column: 3;
+        }
+        .col4 {
+            grid-column: 4;
+        }
+        #history {
+        display: none;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: var(--secondary-color);
+    }
+    </style>
+    <title>Calculator</title>
+</head>
+<body>
+    
+    <div class="calculator">
+        <input type="text" id="result" readonly class="row1 col1 col2 col3 col4">
+        <button onclick="appendToResult('7')" class="row2 col1">7</button>
+        <button onclick="appendToResult('8')" class="row2 col2">8</button>
+        <button onclick="appendToResult('9')" class="row2 col3">9</button>
+        <button onclick="appendToResult('+')" class="row2 col4">+</button>
+        <button onclick="appendToResult('4')" class="row3 col1">4</button>
+        <button onclick="appendToResult('5')" class="row3 col2">5</button>
+        <button onclick="appendToResult('6')" class="row3 col3">6</button>
+        <button onclick="appendToResult('-')" class="row3 col4">-</button>
+        <button onclick="appendToResult('1')" class="row4 col1">1</button>
+        <button onclick="appendToResult('2')" class="row4 col2">2</button>
+        <button onclick="appendToResult('3')" class="row4 col3">3</button>
+        <button onclick="appendToResult('*')" class="row4 col4">*</button>
+        <button onclick="appendToResult('0')" class="row5 col1">0</button>
+        <button onclick="appendToResult('.')" class="row5 col2">.</button>
+        <button onclick="calculateResult()" class="row5 col3">=</button>
+        <button onclick="appendToResult('/')" class="row5 col4">/</button>
+        <button onclick="appendToResult('^')" class="row6 col1">^</button>
+        <button onclick="appendToResult('√')" class="row6 col2">√</button>
+        <button onclick="appendToResult('sin')" class="row6 col3">sin</button>
+        <button onclick="appendToResult('cos')" class="row6 col4">cos</button>
+        <button onclick="appendToResult('tan')" class="row7 col1">tan</button>
+        <button onclick="appendToResult('log')" class="row7 col2">log</button>
+        <button onclick="mc()" class="row7 col3">MC</button>
+        <button onclick="mr()" class="row7 col4">MR</button>
+        <button onclick="mPlus()" class="row8 col1">M+</button>
+        <button onclick="mMinus()" class="row8 col2">M-</button>
+        <button onclick="clearResult()" class="row8 col3">C</button>
+        <button onclick="showHistory()" class="row8 col4">History</button>
+        <button onclick="undoInput()" class="row9 col1">Undo</button>
+    </div>
+    <div id="history"></div>
+
+
+<script>
+    let memory = 0;
+    let history = [];
+
+    function appendToResult(value) {
+        document.getElementById('result').value += value;
+    }
+
+    function calculateResult() {
+        const expression = document.getElementById('result').value;
+        try {
+            const result = eval(expression);
+            document.getElementById('result').value = result;
+            history.push(`${expression} = ${result}`);
+            updateHistory();
+        } catch (error) {
+            document.getElementById('result').value = 'Error: ' + error.message;
+        }
+    }
+
+    function mc() {
+        memory = 0;
+    }
+
+    function mr() {
+        document.getElementById('result').value = memory;
+    }
+
+    function mPlus() {
+        memory += parseFloat(document.getElementById('result').value);
+        document.getElementById('result').value = '';
+    }
+
+    function mMinus() {
+        memory -= parseFloat(document.getElementById('result').value);
+        document.getElementById('result').value = '';
+    }
+
+    function updateHistory() {
+        const historyDiv = document.getElementById('history');
+        historyDiv.innerHTML = '';
+        history.forEach((entry) => {
+            const paragraph = document.createElement('p');
+            paragraph.textContent = entry;
+            historyDiv.appendChild(paragraph);
+        });
+    }
+
+    function clearResult() {
+        document.getElementById('result').value = '';
+        memory = 0;
+        history = [];
+        updateHistory();
+    }
+
+    function showHistory() {
+            const historyDiv = document.getElementById('history');
+            historyDiv.style.display = historyDiv.style.display === 'block' ? 'none' : 'block';
+        }
+
+    function undoInput() {
+    if (inputHistory.length > 0) {
+        document.getElementById('result').value = inputHistory.pop();
+        }
+    }
+
+      
+       function calculateResult() {
+           const expression = document.getElementById('result').value;
+           try {
+               const result = eval(expression);
+               document.getElementById('result').value = result;
+               history.push(`${expression} = ${result}`);
+               updateHistory();
+           } catch (error) {
+               document.getElementById('result').value = `Error: ${error.message}`;
+           }
+       }
+       
+       
+       function mPlus() {
+           const inputValue = parseFloat(document.getElementById('result').value);
+           if (isNaN(inputValue)) {
+               document.getElementById('result').value = 'Error: Invalid input';
+               return;
+           }
+           memory += inputValue;
+           document.getElementById('result').value = '';
+       }
+       
+      function mMinus() {
+            const inputValue = parseFloat(document.getElementById('result').value);
+            if (isNaN(inputValue)) {
+                document.getElementById('result').value = 'Error: Invalid input';
+                return;
+            }
+            memory -= inputValue;
+            document.getElementById('result').value = '';
+        }
+</script>
+
+</body>
+</html>
